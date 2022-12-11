@@ -16,7 +16,8 @@ f.close()
 
 
 def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity, days):
-    cheks_amount = self_signed + expiration_date + longterm + bad_encryption + unreliable_organization + key_length + validity
+    cheks_amount = self_signed + expiration_date + longterm + \
+        bad_encryption + unreliable_organization + key_length + validity
 
     f = open('result.txt', 'a')
 
@@ -48,25 +49,27 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
         Before = str(x509.get_notBefore())
         After = str(x509.get_notAfter())
 
-        aa = datetime.date(int(Before[2:6]), int(Before[7:8]), int(Before[9:10]))
+        aa = datetime.date(int(Before[2:6]), int(
+            Before[7:8]), int(Before[9:10]))
         bb = datetime.date(int(After[2:6]), int(After[7:8]), int(After[9:10]))
 
         interval = bb-aa
-        if(int(interval.days) > 397):
+        if (int(interval.days) > 397):
             fails.append("Слишком большой срок действия сертификата;")
             count += 1
 
-
-    if(count == 0):
+    if (count == 0):
         f.write("IP: " + ip + ';' + " Все проверки пройдены успешно.")
     else:
         text = "IP: " + ip + ';' + " Провалено проверок: " + str(count) + ":"
         f.write(text)
-        len_ip = len("IP: " + ip + '; ') + 10
+        len_ip = len("IP: " + ip + '; ')
         for i in range(len(fails)):
             f.write('\n' + ' ' * len_ip + fails[i])
     f.write("\n")
     f.close()
+
+
 """
     if(longterm == 1):
         #
@@ -95,5 +98,5 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
     if (issuer.find("Let's Encrypt") != -1):
 """
 
-main_script("151.101.193.69", 1, 1, 1, 0, 0, 0, 0, 0) #stack
+main_script("151.101.193.69", 1, 1, 1, 0, 0, 0, 0, 0)  # stack
 main_script("93.186.225.194", 1, 1, 1, 0, 0, 0, 0, 0)  # vk
