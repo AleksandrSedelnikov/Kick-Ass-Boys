@@ -16,6 +16,8 @@ window = Tk()
 window.title("Программа для проверки сайтов")
 window.geometry('960x480')
 window.resizable(width=False, height=False)
+global count_res
+count_res = 0
 global background
 global src_file
 global protocol
@@ -92,11 +94,34 @@ def click_btn1():
 
 @thread
 def click_btn3():
-    new_window = tk.Toplevel(window)
 
+    new_window = tk.Toplevel(window)
+    btn["state"] = DISABLED
+    btn2["state"] = DISABLED
+    btn3["state"] = DISABLED
+    def active_window():
+        btn["state"] = ACTIVE
+        btn2["state"] = ACTIVE
+        btn3["state"] = ACTIVE
+        new_window.destroy()
+    new_window.protocol("WM_DELETE_WINDOW", lambda: active_window())
+    new_window.title("Тестовое окно")
+    new_window.geometry('320x320')
+    new_window.resizable(width=False, height=False)
+    background2_label = Label(new_window, image=background)
+    background2_label.place(x=0, y=0, relwidth=1, relheight=1)
+    MenuBttn = Menubutton(new_window, text = "Выберите шифрование", relief = RAISED,state=DISABLED)
+    Menu1 = Menu(MenuBttn, tearoff = 0)
+    Var1 = IntVar()
+    Var2 = IntVar()
+    Var3 = IntVar()
+    Menu1.add_checkbutton(label = "sha", variable = Var1)
+    Menu1.add_checkbutton(label = "burgerking govno", variable = Var2)
+    Menu1.add_checkbutton(label = "Danya", variable = Var3)
+    MenuBttn["menu"] = Menu1
+    MenuBttn.place(x=150, y=160)
     if (os.path.exists("text.txt")):
         f = open("text.txt", "r")
-        #result = [1,1,1,1,1,1,1]
         result1 = f.readline()
         f.close()
         result1 = result1[1:-1]
@@ -125,8 +150,10 @@ def click_btn3():
                 elif (count == 3):
                     if (result1[i] == "1"):
                         result[count] = 1
+                        MenuBttn["state"] = ACTIVE
                     else:
                         result[count] = 0
+                        MenuBttn["state"] = DISABLED
                     count += 1
                 elif (count == 4):
                     if (result1[i] == "1"):
@@ -145,20 +172,20 @@ def click_btn3():
                 result[count] = value
                 count += 1
     else:
-        #result = [1,1,1,1,1,1,0]
         value = 0
-    var = BooleanVar(value=True)
+    var = BooleanVar()
     var1 = BooleanVar()
     var2 = BooleanVar()
     var3 = BooleanVar()
     var4 = BooleanVar()
     var5 = BooleanVar()
-    new_window.protocol("WM_DELETE_WINDOW", lambda: new_window.destroy())
-    new_window.title("Тестовое окно")
-    new_window.geometry('320x320')
-    new_window.resizable(width=False, height=False)
-    background2_label = Label(new_window, image=background)
-    background2_label.place(x=0, y=0, relwidth=1, relheight=1)
+    var6 = StringVar()
+    var6.set("sha1")
+    options = [
+        "sha1",
+        "sha256",
+        "MD5"
+    ]
     def click_cb():
         if var.get():
             result[0] = 1
@@ -176,9 +203,11 @@ def click_btn3():
             result[2] = 0
     def click_cb3():
         if var3.get():
+            MenuBttn["state"] = ACTIVE
             result[3] = 1
         else:
             result[3] = 0
+            MenuBttn["state"] = DISABLED
     def click_cb4():
         if var4.get():
             result[4] = 1
@@ -196,27 +225,44 @@ def click_btn3():
         f = open('text.txt', 'w')
         f.write(str(result))
         f.close()
+        pcrypto = [0,0,0]
+        if (result[3] == 1):
+            if (Var1.get() == True):
+                pcrypto[0] = 1
+            else:
+                pcrypto[0] = 0
+            if (Var2.get() == True):
+                pcrypto[1] = 1
+            else:
+                pcrypto[1] = 0
+            if (Var3.get() == True):
+                pcrypto[2] = 1
+            else:
+                pcrypto[2] = 0
+            result[3] = pcrypto
+        print(result)
+        active_window()
         new_window.destroy()
         return result
-    cb = Checkbutton(new_window,text="Параметр 1", variable=var ,command=click_cb)
+    cb = Checkbutton(new_window,text="Самоподписанный", variable=var ,command=click_cb)
     cb.place(x=45, y=10)
     if (result[0] == 1):
         cb.select()
     else:
         cb.deselect()
-    cb1 = Checkbutton(new_window,text="Параметр 2", variable=var1 ,command=click_cb1)
+    cb1 = Checkbutton(new_window,text="Истёкший срок действия", variable=var1 ,command=click_cb1)
     cb1.place(x=45, y=60)
     if (result[1] == 1):
         cb1.select()
     else:
         cb1.deselect()
-    cb2 = Checkbutton(new_window,text="Параметр 3", variable=var2 ,command=click_cb2)
+    cb2 = Checkbutton(new_window,text="Длительный срок", variable=var2 ,command=click_cb2)
     cb2.place(x=45, y=110)
     if (result[2] == 1):
         cb2.select()
     else:
         cb2.deselect()
-    cb3 = Checkbutton(new_window,text="Параметр 4", variable=var3 ,command=click_cb3)
+    cb3 = Checkbutton(new_window,text="Шифрование", variable=var3 ,command=click_cb3)
     cb3.place(x=150, y=10)
     if (result[3] == 1):
         cb3.select()
@@ -234,7 +280,7 @@ def click_btn3():
         cb5.select()
     else:
         cb5.deselect()
-    scale = Scale(new_window,length=160,from_=0, to=100, command=click_scale,orient = HORIZONTAL)
+    scale = Scale(new_window,width=5,length=160,from_=0, to=100, command=click_scale,orient = HORIZONTAL,label="истечёт")
     scale.set(value)
     scale.place(x = 80, y = 200)
     btn4 = Button(new_window,width= 25, height= 2, text="Сохранить настройки", relief='flat', command=click_btn4)
@@ -242,8 +288,22 @@ def click_btn3():
 
 @thread
 def click_btn5():
-    print("suka")
-    script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+    global count_res
+    if (count_res == 0):
+        btn2["text"] = f"Проверка..."
+        btn2["state"] = DISABLED
+        count_res += 1
+        print("suka")
+        access = script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+        if (access != ""):
+            btn2["text"] = f"Результат"
+            btn2["state"] = ACTIVE
+    else:
+        btn2["state"] = DISABLED
+        os.system('result.txt')
+        btn2["state"] = ACTIVE
+    
+
 
 
 
@@ -252,6 +312,6 @@ btn = Button(window,width= 25, height= 5, text="Выбор файла с сай�
 btn.grid(column=1, row=1, padx = 70, pady = 300) 
 btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование",state = ACTIVE, command=click_btn5,relief = 'flat')  
 btn2.grid(column=3, row=1, padx = 65, pady = 300)
-btn3 = Button(window ,width= 25, height= 5, text="Тест", command=click_btn3 ,relief = 'flat')  
+btn3 = Button(window ,width= 25, height= 5, text="Параметры тестирования", command=click_btn3 ,relief = 'flat')  
 btn3.grid(column=2, row=1, padx = 70, pady = 300)
 window.mainloop()
