@@ -6,7 +6,7 @@ from tkinter import *
 from tkinter import filedialog
 from turtle import back, bgcolor
 from pathlib import Path
-import script
+#import script другой файл скрипта, не тот что загрузил Даня
 import tkinter as tk
 import threading
 import webbrowser
