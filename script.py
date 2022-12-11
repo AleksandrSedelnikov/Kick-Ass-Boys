@@ -14,6 +14,8 @@ validity #Период действия
 
 
 def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
+    print("blya")
+    print(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity)
     cheks_amount = self_signed + expiration_date + longterm + \
         bad_encryption + unreliable_organization + key_length + validity
 
@@ -59,7 +61,7 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
 
     if(bad_encryption == 1):
         if(algoritm [2:-1] != 'sha256WithRSAEncryption'):
-            fails.append("Не стандартный алгоритм подписи сертификата" + (algoritm [2:-1]))
+            fails.append("Не стандартный алгоритм подписи сертификата" + str(algoritm [2:-1]))
 
     if (validity != 0 and flag1 == 0):
         today_date = datetime.datetime.now()
@@ -97,7 +99,7 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         #
 """
 
-
+"""
 def main_script(file_addr, flags):
     f = open('result.txt', 'w')
     f.close()
@@ -107,4 +109,5 @@ def main_script(file_addr, flags):
     checker("213.59.254.7", 1, 1, 1, 0, 0, 0, 31)  # gosuslugi
     print("ok")
 
-main_script(0, 0)
+#main_script(0, 0)
+"""

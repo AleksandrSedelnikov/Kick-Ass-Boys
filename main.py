@@ -6,12 +6,15 @@ from tkinter import *
 from tkinter import filedialog
 from turtle import back, bgcolor
 from pathlib import Path
-#import script другой файл скрипта, не тот что загрузил Даня
+#import script1
+import script
 import tkinter as tk
 import threading
 import webbrowser
 import os
 from tkinter.filedialog import askopenfilename
+global result 
+result = [1,1,1,1,1,1,0]
 #from PIL import Image
 
 window = Tk()
@@ -54,7 +57,7 @@ def click_btn1():
     btn["state"] = DISABLED
     btn.configure(bg = 'white', fg= 'black')
     btn2["state"] = DISABLED
-    access_data = script.main_script(filename)
+    access_data = script1.main_script(filename)
     protocol = access_data[0][1]
     noprotocol = access_data[0][0]
     if (access_data):
@@ -68,7 +71,7 @@ def click_btn1():
         background1_label.place(x=0, y=0, relwidth=1, relheight=1)
         def coordinates(x,y):
             if (y == 3):
-                script.save_data(filename)
+                script1.save_data(filename)
             if (y == 2):
                 webbrowser.open('http://' +access_data[1][x], new=0, autoraise=True)
             if (y == 1):
@@ -95,14 +98,66 @@ def click_btn1():
 @thread
 def click_btn3():
     new_window = tk.Toplevel(window)
-    var = BooleanVar()
+
+    if (os.path.exists("text.txt")):
+        f = open("text.txt", "r")
+        #result = [1,1,1,1,1,1,1]
+        result1 = f.readline()
+        f.close()
+        result1 = result1[1:-1]
+        result1 = result1.replace(",", "")
+        count = 0
+        for i in range(len(result1)):
+            if ((result1[i] != " ") and count < 6):
+                if (count == 0):
+                    if (result1[i] == "1"):
+                        result[count] = 1
+                    else:
+                        result[count] = 0
+                    count += 1
+                elif (count == 1):
+                    if (result1[i] == "1"):
+                        result[count] = 1
+                    else:
+                        result[count] = 0
+                    count += 1
+                elif (count == 2):
+                    if (result1[i] == "1"):
+                        result[count] = 1 
+                    else:
+                        result[count] = 0
+                    count += 1
+                elif (count == 3):
+                    if (result1[i] == "1"):
+                        result[count] = 1
+                    else:
+                        result[count] = 0
+                    count += 1
+                elif (count == 4):
+                    if (result1[i] == "1"):
+                        result[count] = 1
+                    else:
+                        result[count] = 0
+                    count += 1
+                elif (count == 5):
+                    if (result1[i] == "1"):
+                        result[count] = 1
+                    else:
+                        result[count] = 0
+                    count += 1
+            elif (count == 6):
+                value = int(result1[i:])
+                result[count] = value
+                count += 1
+    else:
+        #result = [1,1,1,1,1,1,0]
+        value = 0
+    var = BooleanVar(value=True)
     var1 = BooleanVar()
     var2 = BooleanVar()
     var3 = BooleanVar()
     var4 = BooleanVar()
     var5 = BooleanVar()
-    var6 = IntVar()
-    result = [1,1,1,1,1,1,1]
     new_window.protocol("WM_DELETE_WINDOW", lambda: new_window.destroy())
     new_window.title("Тестовое окно")
     new_window.geometry('320x320')
@@ -140,37 +195,67 @@ def click_btn3():
         else:
             result[5] = 0
     def click_scale(val):
-        v = int(float(val))
-        result[6] = v
+            v = int(float(val))
+            result[6] = v
     def click_btn4():
-        print(result)
+        f = open('text.txt', 'w')
+        f.write(str(result))
+        f.close()
+        new_window.destroy()
+        return result
     cb = Checkbutton(new_window,text="Параметр 1", variable=var ,command=click_cb)
-    cb.select()
-    cb.place(x=50, y=10)
+    cb.place(x=45, y=10)
+    if (result[0] == 1):
+        cb.select()
+    else:
+        cb.deselect()
     cb1 = Checkbutton(new_window,text="Параметр 2", variable=var1 ,command=click_cb1)
-    cb1.select()
-    cb1.place(x=50, y=60)
+    cb1.place(x=45, y=60)
+    if (result[1] == 1):
+        cb1.select()
+    else:
+        cb1.deselect()
     cb2 = Checkbutton(new_window,text="Параметр 3", variable=var2 ,command=click_cb2)
-    cb2.select()
-    cb2.place(x=50, y=110)
+    cb2.place(x=45, y=110)
+    if (result[2] == 1):
+        cb2.select()
+    else:
+        cb2.deselect()
     cb3 = Checkbutton(new_window,text="Параметр 4", variable=var3 ,command=click_cb3)
-    cb3.select()
-    cb3.place(x=50, y=160)
+    cb3.place(x=150, y=10)
+    if (result[3] == 1):
+        cb3.select()
+    else:
+        cb3.deselect()
     cb4 = Checkbutton(new_window,text="Параметр 5", variable=var4 ,command=click_cb4)
-    cb4.select()
-    cb4.place(x=50, y=210)
+    cb4.place(x=150, y=60)
+    if (result[4] == 1):
+        cb4.select()
+    else:
+        cb4.deselect()
     cb5 = Checkbutton(new_window,text="Параметр 6", variable=var5 ,command=click_cb5)
-    cb5.select()
-    cb5.place(x=160, y=10)
-    scale = Scale(new_window,from_=0, to=1000, command=click_scale)
-    scale.place(x = 210, y = 60)
+    cb5.place(x=150, y=110)
+    if (result[5] == 1):
+        cb5.select()
+    else:
+        cb5.deselect()
+    scale = Scale(new_window,length=160,from_=0, to=100, command=click_scale,orient = HORIZONTAL)
+    scale.set(value)
+    scale.place(x = 80, y = 200)
     btn4 = Button(new_window,width= 25, height= 2, text="Сохранить настройки", relief='flat', command=click_btn4)
-    btn4.place(x=80, y = 250)
-    return 0
+    btn4.place(x=70, y = 250)
+
+@thread
+def click_btn5():
+    print("suka")
+    script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+
+
+
 
 btn = Button(window,width= 25, height= 5, text="Выбор файла с сайтами",command=click_btn,relief = 'flat') 
 btn.grid(column=1, row=1, padx = 70, pady = 300) 
-btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование",state = DISABLED, command=click_btn1,relief = 'flat')  
+btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование",state = ACTIVE, command=click_btn5,relief = 'flat')  
 btn2.grid(column=3, row=1, padx = 65, pady = 300)
 btn3 = Button(window ,width= 25, height= 5, text="Тест", command=click_btn3 ,relief = 'flat')  
 btn3.grid(column=2, row=1, padx = 70, pady = 300)
