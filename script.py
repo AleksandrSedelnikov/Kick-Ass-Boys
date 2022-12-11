@@ -13,7 +13,11 @@ validity #Период действия
 """
 
 
+<<<<<<< HEAD
 def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
+=======
+def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity, days):
+>>>>>>> d16382781b9d33f13b14d93f4a22296254d0930a
     cheks_amount = self_signed + expiration_date + longterm + \
         bad_encryption + unreliable_organization + key_length + validity
 
@@ -48,11 +52,13 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         Before = str(x509.get_notBefore())
         After = str(x509.get_notAfter())
 
-        aa = datetime.date(int(Before[2:6]), int(Before[7:8]), int(Before[9:10]))
+        aa = datetime.date(int(Before[2:6]), int(
+            Before[7:8]), int(Before[9:10]))
         bb = datetime.date(int(After[2:6]), int(After[7:8]), int(After[9:10]))
 
         interval = bb-aa
         if (int(interval.days) > 397):
+<<<<<<< HEAD
             fails.append("Слишком большой срок действия сертификата (" + str(interval.days) + "д.);")
             count += 1
 
@@ -76,6 +82,11 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
 
         
 
+=======
+            fails.append("Слишком большой срок действия сертификата;")
+            count += 1
+
+>>>>>>> d16382781b9d33f13b14d93f4a22296254d0930a
     if (count == 0):
         f.write("IP: " + ip + ';' + " Все проверки пройдены успешно.")
     else:
@@ -96,6 +107,7 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         #
 """
 
+<<<<<<< HEAD
 
 def main_script(file_addr, flags):
     f = open('result.txt', 'w')
@@ -107,3 +119,7 @@ def main_script(file_addr, flags):
     print("ok")
 
 main_script(0, 0)
+=======
+main_script("151.101.193.69", 1, 1, 1, 0, 0, 0, 0, 0)  # stack
+main_script("93.186.225.194", 1, 1, 1, 0, 0, 0, 0, 0)  # vk
+>>>>>>> d16382781b9d33f13b14d93f4a22296254d0930a
