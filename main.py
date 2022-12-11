@@ -1,10 +1,7 @@
 from fileinput import filename
-from multiprocessing.resource_sharer import stop
-from re import A
 import os
 from tkinter import *
 from tkinter import filedialog
-from turtle import back, bgcolor
 from pathlib import Path
 #import script1
 import script
@@ -12,10 +9,8 @@ import tkinter as tk
 import threading
 import webbrowser
 import os
-from tkinter.filedialog import askopenfilename
 global result 
 result = [1,1,1,1,1,1,0]
-#from PIL import Image
 
 window = Tk()
 window.title("Программа для проверки сайтов")
