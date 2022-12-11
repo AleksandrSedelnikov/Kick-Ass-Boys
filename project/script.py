@@ -47,16 +47,22 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, validity
             buff = str(algoritm)
             if(buff.find("sha256") != -1):
                 flag2 = 1
+            if(buff.find("SHA256") != -1):
+                flag2 = 1
                 
 
         if(bad_encryption[1] == 1 and flag2 == 0):
             buff = str(algoritm)
             if(buff.find("sha1") != -1):
                 flag2 = 1
+            if(buff.find("SHA1") != -1):
+                flag2 = 1
 
         if(bad_encryption[2] == 1 and flag2 == 0):
             buff = str(algoritm)
             if(buff.find("md5") != -1):
+                flag2 = 1
+            if(buff.find("MD5") != -1):
                 flag2 = 1
 
         if(flag2 == 0):
@@ -90,7 +96,9 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, validity
                 
         f.write("\n\n")
         f.close()
+        print(f"Хороший - {ip}")
     except Exception:
+        print(f"Плохой - {ip}")
         pass
 def main_script(file,self_signed, expiration_date, longterm, bad_encryption, validity):
     with open(file) as f:
@@ -123,17 +131,30 @@ def main_script(file,self_signed, expiration_date, longterm, bad_encryption, val
                     print(b)
 
 
+                    """
+                    for i in range(int(a[0]), int(b[0]) + 1):
+                        for j in range(int(a[1]), 256):
+                            for w in range(int(a[2]), 256):
+                                for z in range(int(a[3]), 256):
+                                    checker(f"{i}.{j}.{w}.{z}", self_signed, expiration_date, longterm, bad_encryption, validity)
+                    """
 
-                    for i in range(int(a[0]), int(b[0])):
+
+                    if (a[0] == b[0]):
+                        i = a[0]
                         for j in range(int(a[1]), int(b[1])):
-                            for z in range(int(a[2]), int(b[2])):
-                                for w in range(int(a[3]), int(b[3])):
-                                    print(f"{i}.{j}.{w}.{z}")
-                                    #checker(f"{i}.{j}.{w}.{z}", self_signed, expiration_date, longterm, bad_encryption, validity)
+                            for w in range(int(a[2]), int(b[2])):
+                                for z in range(int(a[3]), int(b[3])):
+                                    checker(f"{i}.{j}.{w}.{z}", self_signed, expiration_date, longterm, bad_encryption, validity)
+                    else:
+                        for i in range(int(a[0]), int(b[0])):
+                            for j in range(int(a[1]), int(b[1])):
+                                for w in range(int(a[2]), int(b[1])):
+                                    for z in range(int(a[3]), int(b[1])):
+                                        checker(f"{i}.{j}.{w}.{z}", self_signed, expiration_date, longterm, bad_encryption, validity)
                     break
             if one == 0:
                 a = row[0].split(";")
-                for i in range(a):
-                    print(a[i])
-                    #checker(a[i], self_signed, expiration_date, longterm, bad_encryption, validity)
+                for i in range(len(a)):
+                    checker(a[i], self_signed, expiration_date, longterm, bad_encryption, validity)
     return 1

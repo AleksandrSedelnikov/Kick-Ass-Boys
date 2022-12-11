@@ -1,6 +1,5 @@
 from fileinput import filename
 import os
-import csv
 from tkinter import *
 from tkinter import filedialog
 from pathlib import Path
@@ -14,6 +13,8 @@ global result
 result = [1,1,1,1,0]
 
 window = Tk()
+dir = os.path.abspath(os.curdir)
+window.iconbitmap(f'{dir}\img\id.ico')
 window.title("Программа для проверки сертификатов сайтов")
 window.geometry('960x480')
 window.resizable(width=False, height=False)
@@ -26,8 +27,7 @@ global noprotocol
 global check_l
 global access_data
 global name
-dir = os.path.abspath(os.curdir)
-background = PhotoImage(file = dir + r"\background.png")
+background = PhotoImage(file = dir + r"\img\background.png")
 background_label = Label(window, image=background)
 background_label.place(x=0, y=0, relwidth=1, relheight=1)
 def click_btn():
@@ -97,12 +97,13 @@ def click_btn1():
 def click_btn3():
 
     new_window = tk.Toplevel(window)
+    new_window.iconbitmap(f'{dir}\img\setting.ico')
     btn["state"] = DISABLED
     btn2["state"] = DISABLED
     btn3["state"] = DISABLED
     def active_window():
         btn["state"] = ACTIVE
-        btn2["state"] = ACTIVE
+        btn2["state"] = DISABLED
         btn3["state"] = ACTIVE
         new_window.destroy()
     new_window.protocol("WM_DELETE_WINDOW", lambda: active_window())
@@ -120,7 +121,7 @@ def click_btn3():
     Menu1.add_checkbutton(label = "sha1", variable = Var2)
     Menu1.add_checkbutton(label = "md5", variable = Var3)
     MenuBttn["menu"] = Menu1
-    MenuBttn.place(x=200, y=140)
+    MenuBttn.place(x=180, y=90)
     if (os.path.exists("configuration.txt")):
         f = open("configuration.txt", "r")
         result1 = f.readline()
@@ -222,32 +223,32 @@ def click_btn3():
         new_window.destroy()
         return result
     cb = Checkbutton(new_window,text="Самоподписанный", variable=var ,command=click_cb)
-    cb.place(x=15, y=10)
+    cb.place(x=180, y=10)
     if (result[0] == 1):
         cb.select()
     else:
         cb.deselect()
-    cb1 = Checkbutton(new_window,text="Истёкший срок действия", variable=var1 ,command=click_cb1)
-    cb1.place(x=15, y=60)
+    cb1 = Checkbutton(new_window,text="Истёкший срок\nдействия", variable=var1 ,command=click_cb1)
+    cb1.place(x=10, y=60)
     if (result[1] == 1):
         cb1.select()
     else:
         cb1.deselect()
     cb2 = Checkbutton(new_window,text="Длительный срок", variable=var2 ,command=click_cb2)
-    cb2.place(x=15, y=110)
+    cb2.place(x=10, y=10)
     if (result[2] == 1):
         cb2.select()
     else:
         cb2.deselect()
     cb3 = Checkbutton(new_window,text="Шифрование", variable=var3 ,command=click_cb3)
-    cb3.place(x=200, y=110)
+    cb3.place(x=180, y=60)
     if (result[3] == 1):
         cb3.select()
     else:
         cb3.deselect()
     scale = Scale(new_window,width=8,length=305,from_=0, to=397, command=click_scale,orient = HORIZONTAL,label="Истечёт через: не выбрано",relief=FLAT)
     scale.set(value)
-    scale.place(x = 5, y = 190)
+    scale.place(x = 5, y = 150)
     btn4 = Button(new_window,width= 25, height= 2, text="Сохранить настройки", relief='flat', command=click_btn4)
     btn4.place(x=70, y = 250)
 
@@ -259,7 +260,7 @@ def click_btn5():
         btn2["state"] = DISABLED
         btn6["state"] = DISABLED
         count_res += 1
-        access = script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4])
+        access = script.main_script(filename, result[0], result[1], result[2], result[3], result[4])
         if (access != ""):
             btn2["text"] = f"Результат"
             btn6["state"] = ACTIVE
@@ -284,11 +285,11 @@ def click_btn6():
     btn2["text"] = f"Начать тестирование"
     btn6["state"] = DISABLED
 
-btn = Button(window,width= 25, height= 5, text="Выбор файла с сайтами",command=click_btn,relief = 'flat') 
+btn = Button(window,width= 25, height= 5, text="Выбор файла",command=click_btn,relief = 'flat') 
 btn.grid(column=1, row=1, padx = 70, pady = 300) 
 btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование", command=click_btn5,relief = 'flat', state = DISABLED)  
 btn2.grid(column=3, row=1, padx = 65, pady = 300)
-btn3 = Button(window ,width= 25, height= 5, text="Параметры тестирования", command=click_btn3 ,relief = 'flat')  
+btn3 = Button(window ,width= 25, height= 5, text="Параметры тестирования", command=click_btn3, relief = 'flat')  
 btn3.grid(column=2, row=1, padx = 70, pady = 300)
 btn6 = Button(window ,width= 10, height= 1, text="cбросить", command=click_btn6 ,relief = 'flat',state=DISABLED)  
 btn6.place(x=770,y=390)
