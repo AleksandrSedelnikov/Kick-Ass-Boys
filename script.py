@@ -11,12 +11,11 @@ unreliable_organization #Недостоверная организация
 key_length #Недостаточная длина ключа
 validity #Период действия
 """
-f = open('result.txt', 'w')
-f.close()
 
 
-def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity, days):
-    cheks_amount = self_signed + expiration_date + longterm + bad_encryption + unreliable_organization + key_length + validity
+def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
+    cheks_amount = self_signed + expiration_date + longterm + \
+        bad_encryption + unreliable_organization + key_length + validity
 
     f = open('result.txt', 'a')
 
@@ -38,11 +37,12 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
         if (issuer.find("Let's Encrypt") != -1):
             fails.append("Самоподписанный сертификат;")
             count += 1
-
+    flag1 = 0
     if (expiration_date == 1):
         if (x509.has_expired() == True):
             fails.append("Истёк срок действия сертификата;")
             count += 1
+            flag1 = 1
 
     if (longterm == 1):
         Before = str(x509.get_notBefore())
@@ -52,48 +52,58 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
         bb = datetime.date(int(After[2:6]), int(After[7:8]), int(After[9:10]))
 
         interval = bb-aa
-        if(int(interval.days) > 397):
-            fails.append("Слишком большой срок действия сертификата;")
+        if (int(interval.days) > 397):
+            fails.append("Слишком большой срок действия сертификата (" + str(interval.days) + "д.);")
+            count += 1
+
+    if(bad_encryption == 1):
+        if(algoritm [2:-1] != 'sha256WithRSAEncryption'):
+            fails.append("Не стандартный алгоритм подписи сертификата" + (algoritm [2:-1]))
+
+    if (validity != 0 and flag1 == 0):
+        today_date = datetime.datetime.now()
+        After = str(x509.get_notAfter())
+        print(today_date)
+
+        aa = datetime.date(today_date.year, today_date.month, today_date.day)
+        bb = datetime.date(int(After[2:6]), int(After[7:8]), int(After[9:10]))
+
+        interval = bb-aa
+        if (int(interval.days) < validity):
+            fails.append("Сертификат истечёт через " + str(interval.days) + "д.;")
             count += 1
 
 
-    if(count == 0):
+        
+
+    if (count == 0):
         f.write("IP: " + ip + ';' + " Все проверки пройдены успешно.")
     else:
         text = "IP: " + ip + ';' + " Провалено проверок: " + str(count) + ":"
         f.write(text)
-        len_ip = len("IP: " + ip + '; ') + 10
+        len_ip = len("IP: " + ip + '; ')
         for i in range(len(fails)):
             f.write('\n' + ' ' * len_ip + fails[i])
-    f.write("\n")
+    f.write("\n\n")
     f.close()
+
+
 """
-    if(longterm == 1):
-        #
-
-    if(bad_encryption == 1):
-        #
-
     if(unreliable_organization == 1):
         #
 
     if(key_length == 1):
         #
-
-    if(validity != 0):
-        #
-
-
-
-
-    if (x509.has_expired() == False):
-        verify = 1
-    else:
-        verify = 0
-    subject = x509.get_subject().get_components()
-
-    if (issuer.find("Let's Encrypt") != -1):
 """
 
-main_script("151.101.193.69", 1, 1, 1, 0, 0, 0, 0, 0) #stack
-main_script("93.186.225.194", 1, 1, 1, 0, 0, 0, 0, 0)  # vk
+
+def main_script(file_addr, flags):
+    f = open('result.txt', 'w')
+    f.close()
+
+    checker("151.101.193.69", 1, 1, 1, 0, 0, 0, 18)  # stack
+    checker("93.186.225.194", 1, 1, 1, 0, 0, 0, 99999)  # vk
+    checker("213.59.254.7", 1, 1, 1, 0, 0, 0, 31)  # gosuslugi
+    print("ok")
+
+main_script(0, 0)
