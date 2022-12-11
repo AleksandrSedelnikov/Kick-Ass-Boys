@@ -10,12 +10,12 @@ import threading
 import webbrowser
 import os
 global result 
-result = [1,1,1,1,1,1,0]
+result = [1,1,1,1,0]
 
 window = Tk()
 window.title("Программа для проверки сайтов")
 window.geometry('960x480')
-window.resizable(width=False, height=False)
+#window.resizable(width=False, height=False)
 global count_res
 count_res = 0
 global background
@@ -32,7 +32,7 @@ background_label.place(x=0, y=0, relwidth=1, relheight=1)
 def click_btn():
     global filename
     filename = filedialog.askopenfilename()
-    if (filename != '' and Path(filename).suffix == '.txt'):
+    if (filename != '' and Path(filename).suffix == '.csv'):
         btn.configure(bg = 'green', fg= 'white')
         btn["text"] = f"Файл загружен"
         btn2["state"] = ACTIVE
@@ -105,7 +105,7 @@ def click_btn3():
         btn3["state"] = ACTIVE
         new_window.destroy()
     new_window.protocol("WM_DELETE_WINDOW", lambda: active_window())
-    new_window.title("Тестовое окно")
+    new_window.title("Параметры тестирования")
     new_window.geometry('320x320')
     new_window.resizable(width=False, height=False)
     background2_label = Label(new_window, image=background)
@@ -115,13 +115,13 @@ def click_btn3():
     Var1 = IntVar()
     Var2 = IntVar()
     Var3 = IntVar()
-    Menu1.add_checkbutton(label = "sha", variable = Var1)
-    Menu1.add_checkbutton(label = "burgerking govno", variable = Var2)
-    Menu1.add_checkbutton(label = "Danya", variable = Var3)
+    Menu1.add_checkbutton(label = "sha256", variable = Var1)
+    Menu1.add_checkbutton(label = "sha1", variable = Var2)
+    Menu1.add_checkbutton(label = "md5", variable = Var3)
     MenuBttn["menu"] = Menu1
     MenuBttn.place(x=200, y=140)
-    if (os.path.exists("text.txt")):
-        f = open("text.txt", "r")
+    if (os.path.exists("configuration.txt")):
+        f = open("configuration.txt", "r")
         result1 = f.readline()
         f.close()
         result1 = result1[1:-1]
@@ -155,6 +155,7 @@ def click_btn3():
                         result[count] = 0
                         MenuBttn["state"] = DISABLED
                     count += 1
+                """
                 elif (count == 4):
                     if (result1[i] == "1"):
                         result[count] = 1
@@ -167,7 +168,8 @@ def click_btn3():
                     else:
                         result[count] = 0
                     count += 1
-            elif (count == 6):
+                """
+            elif (count == 4):
                 value = int(result1[i:])
                 result[count] = value
                 count += 1
@@ -177,15 +179,10 @@ def click_btn3():
     var1 = BooleanVar()
     var2 = BooleanVar()
     var3 = BooleanVar()
+    """
     var4 = BooleanVar()
     var5 = BooleanVar()
-    var6 = StringVar()
-    var6.set("sha1")
-    options = [
-        "sha1",
-        "sha256",
-        "MD5"
-    ]
+    """
     def click_cb():
         if var.get():
             result[0] = 1
@@ -208,6 +205,7 @@ def click_btn3():
         else:
             result[3] = 0
             MenuBttn["state"] = DISABLED
+    """
     def click_cb4():
         if var4.get():
             result[4] = 1
@@ -218,15 +216,16 @@ def click_btn3():
             result[5] = 1
         else:
             result[5] = 0
+    """
     def click_scale(val):
             v = int(float(val))
             if (v == 0):
-                scale["label"] = f"Не выбрано"
+                scale["label"] = f"Истечёт через: не выбрано"
             else:
-                scale["label"] = f"Истечёт через {v} дней"
-            result[6] = v
+                scale["label"] = f"Истечёт через: {v} дней"
+            result[4] = v
     def click_btn4():
-        f = open('text.txt', 'w')
+        f = open('configuration.txt', 'w')
         f.write(str(result))
         f.close()
         pcrypto = [0,0,0]
@@ -244,8 +243,11 @@ def click_btn3():
             else:
                 pcrypto[2] = 0
             result[3] = pcrypto
+        else:
+            result[3] = pcrypto
         print(result)
         active_window()
+        btn2["state"] = ACTIVE
         new_window.destroy()
         return result
     cb = Checkbutton(new_window,text="Самоподписанный", variable=var ,command=click_cb)
@@ -272,6 +274,7 @@ def click_btn3():
         cb3.select()
     else:
         cb3.deselect()
+    """
     cb4 = Checkbutton(new_window,text="Параметр 5", variable=var4 ,command=click_cb4)
     cb4.place(x=200, y=60)
     if (result[4] == 1):
@@ -284,9 +287,10 @@ def click_btn3():
         cb5.select()
     else:
         cb5.deselect()
-    scale = Scale(new_window,width=5,length=160,from_=0, to=100, command=click_scale,orient = HORIZONTAL,label="Не выбрано")
+    """
+    scale = Scale(new_window,width=8,length=305,from_=0, to=397, command=click_scale,orient = HORIZONTAL,label="Истечёт через: не выбрано",relief=FLAT)
     scale.set(value)
-    scale.place(x = 80, y = 200)
+    scale.place(x = 5, y = 190)
     btn4 = Button(new_window,width= 25, height= 2, text="Сохранить настройки", relief='flat', command=click_btn4)
     btn4.place(x=70, y = 250)
 
@@ -297,8 +301,7 @@ def click_btn5():
         btn2["text"] = f"Проверка..."
         btn2["state"] = DISABLED
         count_res += 1
-        print("suka")
-        access = script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4], result[5], result[6])
+        access = script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4])
         if (access != ""):
             btn2["text"] = f"Результат"
             btn2["state"] = ACTIVE
@@ -311,11 +314,16 @@ def click_btn5():
             btn2["text"] = f"Начать тестирование"
             btn2["state"] = ACTIVE
             count_res = 0
+def click_btn6():
+
+    btn6["state"] = DISABLED
 
 btn = Button(window,width= 25, height= 5, text="Выбор файла с сайтами",command=click_btn,relief = 'flat') 
 btn.grid(column=1, row=1, padx = 70, pady = 300) 
-btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование",state = ACTIVE, command=click_btn5,relief = 'flat')  
+btn2 = Button(window ,width= 25, height= 5, text="Начать тестирование", command=click_btn5,relief = 'flat', state = DISABLED)  
 btn2.grid(column=3, row=1, padx = 65, pady = 300)
 btn3 = Button(window ,width= 25, height= 5, text="Параметры тестирования", command=click_btn3 ,relief = 'flat')  
 btn3.grid(column=2, row=1, padx = 70, pady = 300)
+btn6 = Button(window ,width= 25, height= 3, text="cбросить", command=click_btn6 ,relief = 'flat',state=DISABLED)  
+btn6.grid(column=3, row=2, padx = 10, pady = 0)
 window.mainloop()
