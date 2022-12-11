@@ -2,36 +2,20 @@ import datetime
 import ssl
 import OpenSSL
 
-"""
-self_signed #Самоподписанный сертификат
-expiration_date #Время действия сертификата
-longterm #Слишком большой срок действия сертификата (Более 397 дней)
-bad_encryption #Плохое шифрование
-unreliable_organization #Недостоверная организация
-key_length #Недостаточная длина ключа
-validity #Период действия
-"""
-
+f = open('result.txt', 'w')
+f.close
 
 def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
-    print("blya")
-    print(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity)
-    cheks_amount = self_signed + expiration_date + longterm + \
-        bad_encryption + unreliable_organization + key_length + validity
-
     f = open('result.txt', 'a')
 
     cert = ssl.get_server_certificate((ip, 443))
     x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert)
 
     issuer = str(x509.get_issuer())
-    subject = x509.get_subject()
     After = x509.get_notAfter()
     Before = x509.get_notBefore()
-    version = x509.get_version()
-    serial_number = x509.get_serial_number()
     algoritm = x509.get_signature_algorithm()
-
+    
     fails = []
 
     count = 0
@@ -60,7 +44,9 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
             count += 1
 
     if(bad_encryption == 1):
-        if(algoritm [2:-1] != 'sha256WithRSAEncryption'):
+        buff = str(algoritm)
+        if(buff.find("sha256") == -1):
+            print("hyi")
             fails.append("Не стандартный алгоритм подписи сертификата" + str(algoritm [2:-1]))
 
     if (validity != 0 and flag1 == 0):
@@ -77,8 +63,6 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
             count += 1
 
 
-        
-
     if (count == 0):
         f.write("IP: " + ip + ';' + " Все проверки пройдены успешно.")
     else:
@@ -87,27 +71,6 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         len_ip = len("IP: " + ip + '; ')
         for i in range(len(fails)):
             f.write('\n' + ' ' * len_ip + fails[i])
+            
     f.write("\n\n")
     f.close()
-
-
-"""
-    if(unreliable_organization == 1):
-        #
-
-    if(key_length == 1):
-        #
-"""
-
-"""
-def main_script(file_addr, flags):
-    f = open('result.txt', 'w')
-    f.close()
-
-    checker("151.101.193.69", 1, 1, 1, 0, 0, 0, 18)  # stack
-    checker("93.186.225.194", 1, 1, 1, 0, 0, 0, 99999)  # vk
-    checker("213.59.254.7", 1, 1, 1, 0, 0, 0, 31)  # gosuslugi
-    print("ok")
-
-#main_script(0, 0)
-"""
