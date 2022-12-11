@@ -1,8 +1,5 @@
-#! /usr/bin/env python
-# -*- coding: utf-8 -*-
 import datetime
 import ssl
-import socket
 import OpenSSL
 
 """
@@ -25,7 +22,6 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
 
     cert = ssl.get_server_certificate((ip, 443))
     x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert)
-    f.write("IP: " + ip + ';')
 
     issuer = str(x509.get_issuer())
     subject = x509.get_subject()
@@ -35,19 +31,17 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
     serial_number = x509.get_serial_number()
     algoritm = x509.get_signature_algorithm()
 
+    fails = []
 
     count = 0
     if (self_signed == 1):
         if (issuer.find("Let's Encrypt") != -1):
-            f.write(" Самоподписанный сертификат")
+            fails.append("Самоподписанный сертификат;")
             count += 1
 
     if (expiration_date == 1):
         if (x509.has_expired() == True):
-            if (count > 0):
-                f.write(", истёк срок действия сертификата")
-            else:
-                f.write(" Истёк срок действия сертификата")
+            fails.append("Истёк срок действия сертификата;")
             count += 1
 
     if (longterm == 1):
@@ -59,15 +53,18 @@ def main_script(ip, self_signed, expiration_date, longterm, bad_encryption, unre
 
         interval = bb-aa
         if(int(interval.days) > 397):
-            if (count > 0):
-                f.write(", слишком большой срок действия сертификата")
-            else:
-                f.write(" Слишком большой срок действия сертификата")
+            fails.append("Слишком большой срок действия сертификата;")
             count += 1
+
+
     if(count == 0):
-        f.write(" Все проверки пройдены успешно.")
+        f.write("IP: " + ip + ';' + " Все проверки пройдены успешно.")
     else:
-        f.write("; Успешно пройдено проверок: " + str(cheks_amount - count) + ".")
+        text = "IP: " + ip + ';' + " Провалено проверок: " + str(count) + ":"
+        f.write(text)
+        len_ip = len("IP: " + ip + '; ') + 10
+        for i in range(len(fails)):
+            f.write('\n' + ' ' * len_ip + fails[i])
     f.write("\n")
     f.close()
 """
