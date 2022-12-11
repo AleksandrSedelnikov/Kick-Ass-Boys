@@ -13,9 +13,9 @@ global result
 result = [1,1,1,1,0]
 
 window = Tk()
-window.title("Программа для проверки сайтов")
+window.title("Программа для проверки сертификатов сайтов")
 window.geometry('960x480')
-#window.resizable(width=False, height=False)
+window.resizable(width=False, height=False)
 global count_res
 count_res = 0
 global background
@@ -155,20 +155,6 @@ def click_btn3():
                         result[count] = 0
                         MenuBttn["state"] = DISABLED
                     count += 1
-                """
-                elif (count == 4):
-                    if (result1[i] == "1"):
-                        result[count] = 1
-                    else:
-                        result[count] = 0
-                    count += 1
-                elif (count == 5):
-                    if (result1[i] == "1"):
-                        result[count] = 1
-                    else:
-                        result[count] = 0
-                    count += 1
-                """
             elif (count == 4):
                 value = int(result1[i:])
                 result[count] = value
@@ -179,10 +165,6 @@ def click_btn3():
     var1 = BooleanVar()
     var2 = BooleanVar()
     var3 = BooleanVar()
-    """
-    var4 = BooleanVar()
-    var5 = BooleanVar()
-    """
     def click_cb():
         if var.get():
             result[0] = 1
@@ -205,18 +187,6 @@ def click_btn3():
         else:
             result[3] = 0
             MenuBttn["state"] = DISABLED
-    """
-    def click_cb4():
-        if var4.get():
-            result[4] = 1
-        else:
-            result[4] = 0
-    def click_cb5():
-        if var5.get():
-            result[5] = 1
-        else:
-            result[5] = 0
-    """
     def click_scale(val):
             v = int(float(val))
             if (v == 0):
@@ -274,20 +244,6 @@ def click_btn3():
         cb3.select()
     else:
         cb3.deselect()
-    """
-    cb4 = Checkbutton(new_window,text="Параметр 5", variable=var4 ,command=click_cb4)
-    cb4.place(x=200, y=60)
-    if (result[4] == 1):
-        cb4.select()
-    else:
-        cb4.deselect()
-    cb5 = Checkbutton(new_window,text="Параметр 6", variable=var5 ,command=click_cb5)
-    cb5.place(x=200, y=10)
-    if (result[5] == 1):
-        cb5.select()
-    else:
-        cb5.deselect()
-    """
     scale = Scale(new_window,width=8,length=305,from_=0, to=397, command=click_scale,orient = HORIZONTAL,label="Истечёт через: не выбрано",relief=FLAT)
     scale.set(value)
     scale.place(x = 5, y = 190)
@@ -300,22 +256,31 @@ def click_btn5():
     if (count_res == 0):
         btn2["text"] = f"Проверка..."
         btn2["state"] = DISABLED
+        btn6["state"] = DISABLED
         count_res += 1
         access = script.checker("151.101.193.69", result[0], result[1], result[2], result[3], result[4])
         if (access != ""):
             btn2["text"] = f"Результат"
+            btn6["state"] = ACTIVE
             btn2["state"] = ACTIVE
     else:
         btn2["state"] = DISABLED
+        btn6["state"] = DISABLED
         if (os.path.exists("result.txt")):
             os.system('result.txt')
             btn2["state"] = ACTIVE
+            btn6["state"] = ACTIVE
         else:
             btn2["text"] = f"Начать тестирование"
             btn2["state"] = ACTIVE
+            btn6["state"] = DISABLED
             count_res = 0
 def click_btn6():
-
+    global count_res
+    count_res = 0
+    f = open('result.txt', 'w')
+    f.close()
+    btn2["text"] = f"Начать тестирование"
     btn6["state"] = DISABLED
 
 btn = Button(window,width= 25, height= 5, text="Выбор файла с сайтами",command=click_btn,relief = 'flat') 
@@ -324,6 +289,6 @@ btn2 = Button(window ,width= 25, height= 5, text="Начать тестиров�
 btn2.grid(column=3, row=1, padx = 65, pady = 300)
 btn3 = Button(window ,width= 25, height= 5, text="Параметры тестирования", command=click_btn3 ,relief = 'flat')  
 btn3.grid(column=2, row=1, padx = 70, pady = 300)
-btn6 = Button(window ,width= 25, height= 3, text="cбросить", command=click_btn6 ,relief = 'flat',state=DISABLED)  
-btn6.grid(column=3, row=2, padx = 10, pady = 0)
+btn6 = Button(window ,width= 10, height= 1, text="cбросить", command=click_btn6 ,relief = 'flat',state=DISABLED)  
+btn6.place(x=770,y=390)
 window.mainloop()
