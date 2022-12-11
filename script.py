@@ -7,7 +7,7 @@ f.close
 
 def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
     f = open('result.txt', 'a')
-
+    print(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity)
     cert = ssl.get_server_certificate((ip, 443))
     x509 = OpenSSL.crypto.load_certificate(OpenSSL.crypto.FILETYPE_PEM, cert)
 
@@ -42,12 +42,27 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         if (int(interval.days) > 397):
             fails.append("Слишком большой срок действия сертификата (" + str(interval.days) + "д.);")
             count += 1
-
-    if(bad_encryption == 1):
+    
+    flag2_1=0
+    flag2_2=0
+    flag2_3=0
+    if(bad_encryption[0] == 1):
         buff = str(algoritm)
-        if(buff.find("sha256") == -1):
-            print("hyi")
-            fails.append("Не стандартный алгоритм подписи сертификата" + str(algoritm [2:-1]))
+        if(buff.find("sha256") != -1):
+            flag2_1 = 1
+            
+
+    if(bad_encryption[1] == 1 and flag2_1 == 0 ):
+        buff = str(algoritm)
+        if(buff.find("sha1") != -1):
+            flag2_2 = 1
+
+    if(bad_encryption[2] == 1 and flag2_1 == 0 and flag2_1 == 0 and flag2_2 == 0):
+        buff = str(algoritm)
+        if(buff.find("ZDES") != -1): #zamenite pz, ya nihya ne zapomniln !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            flag2_3 = 1
+    if(flag2_1 == 0 and flag2_2 == 0 and flag2_3 == 0):
+        fails.append("Не стандартный алгоритм подписи сертификата" + str(algoritm [2:-1]))
 
     if (validity != 0 and flag1 == 0):
         today_date = datetime.datetime.now()
