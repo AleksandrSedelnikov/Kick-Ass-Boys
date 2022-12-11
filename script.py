@@ -5,7 +5,7 @@ import OpenSSL
 f = open('result.txt', 'w')
 f.close()
 
-def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliable_organization, key_length, validity):
+def checker(ip, self_signed, expiration_date, longterm, bad_encryption, validity):
     f = open('result.txt', 'a')
 
     cert = ssl.get_server_certificate((ip, 443))
@@ -61,7 +61,7 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
             flag2 = 1
 
     if(flag2 == 0):
-        fails.append("Не стандартный алгоритм подписи сертификата" + str(algoritm [1:]))
+        fails.append("Алгоритм подписи сертификата: " + str(algoritm))
 
     if (validity != 0 and flag1 == 0):
         today_date = datetime.datetime.now()
@@ -85,6 +85,9 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, unreliab
         len_ip = len("IP: " + ip + '; ')
         for i in range(len(fails)):
             f.write('\n' + ' ' * len_ip + fails[i])
+
+    sha1_fingerprint = x509.digest("sha1")
+    f.write("\n" + "    Слепок сертификата: " + str(sha1_fingerprint))
             
     f.write("\n\n")
     f.close()
