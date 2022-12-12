@@ -3,5 +3,5 @@
 # Запуск программы:
 запустить main.py (обязательно наличие папки img и файла script.py в директории запуска)
 # P.s. формат входных данных из файлов .csv:
-<h4 align="left">*если диапазон - как в diapazon_ip.csv<h4>
-<h4 align="left">*если просто набор ipшников - как в default_ip.csv<h4>
+<h4 align="left">- если диапазон - как в diapazon_ip.csv<h4>
+<h4 align="left">- если просто набор ipшников - как в default_ip.csv<h4>
