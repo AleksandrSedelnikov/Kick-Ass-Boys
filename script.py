@@ -71,7 +71,6 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, validity
         if (validity != 0 and flag1 == 0):
             today_date = datetime.datetime.now()
             After = str(x509.get_notAfter())
-            print(today_date)
 
             aa = datetime.date(today_date.year, today_date.month, today_date.day)
             bb = datetime.date(int(After[2:6]), int(After[7:8]), int(After[9:10]))
@@ -95,9 +94,7 @@ def checker(ip, self_signed, expiration_date, longterm, bad_encryption, validity
                 
         f.write("\n\n")
         f.close()
-        print(f"Хороший - {ip}")
     except Exception:
-        print(f"Плохой - {ip}")
         pass
 def main_script(file,self_signed, expiration_date, longterm, bad_encryption, validity):
     with open(file) as f:
